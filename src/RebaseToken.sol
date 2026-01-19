@@ -35,7 +35,6 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract RebaseToken is ERC20 {
     //ERRORS//
     error RebaseToken__InterestRateCanOnlyDecrease(uint256 oldInterestRate, uint256 newInterestRate);
-    event InterestRateSet(uint256 newInterestRate);
 
     //STATE VARIABLES//
     uint256 private constant PRECISION_FACTOR = 1e18;
@@ -43,5 +42,23 @@ contract RebaseToken is ERC20 {
     mapping(address => uint256) private s_userInterestRate;
     mapping(address => uint256) private s_userLastUpdatedTimestamp;
 
+    // EVENTS //
+    event InterestRateSet(uint256 newInterestRate);
+
     constructor() ERC20("Rebase Token", "RBT") {}
+
+    // External Functions //
+    /**
+     * @notice Set the global interest rate for the contract.
+     * @param _newInterestRate The new interest rate to set (scaled by PRECISION_FACTOR basis points per second).
+     * @dev The interest rate can only decrease. Access control (e.g., onlyOwner) should be added.
+     */
+    function setInterestRate(uint256 _newInterestRate) external {
+        // TODO: Add access control
+        if (_newInterestRate > s_interestRate) {
+            revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
+        }
+        s_interestRate = _newInterestRate;
+        emit InterestRateSet(_newInterestRate);
+    }
 }
