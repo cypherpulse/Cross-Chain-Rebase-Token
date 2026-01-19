@@ -70,7 +70,7 @@ contract RebaseToken is ERC20 {
      */
 
     function mint(address _to, uint256 _amount) external {
-        _mintAccruedIntrest(_to);
+        _mintAccruedInterest(_to);
         s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount);
     }
@@ -101,7 +101,7 @@ contract RebaseToken is ERC20 {
 
         // Apply the growth factor to the principal balance.
         // Remember PRECISION_FACTOR is used for scaling, so we divide by it here.
-        return principleBalance * growthFactor / PRECISION_FACTOR;
+        return principalBalance * growthFactor / PRECISION_FACTOR;
     }
 
     //INTERNAL FUNCTIONS//
@@ -118,5 +118,35 @@ contract RebaseToken is ERC20 {
         // current_dynamic_balance - current_stored_principal_balance
         // Then, _mint(_user, interest_amount_to_mint);
         s_userLastUpdatedTimestamp[_user] = block.timestamp;
+    }
+
+    /**
+     * @dev Calculates the growth factor due to accumulated interest since the user's last update.
+     * @param _user The address of the user.
+     * @return The growth factor, scaled by PRECISION_FACTOR. (e.g., 1.05x growth is 1.05 * 1e18).
+     */
+
+    function _calculateUserAccumulatedInterestSinceLastUpdate(address _user)
+        internal
+        view
+        returns (uint256 linearInterestFactor)
+    {
+        // 1. Calculate the time elapsed since the user's balance was last effectively updated.
+        uint256 timeElapsed = block.timestamp - s_userLastUpdatedTimestamp[_user];
+
+        // If no time has passed, or if the user has no locked rate (e.g., never interacted),
+        // the growth factor is simply 1 (scaled by PRECISION_FACTOR).
+        if (timeElapsed == 0 || s_userInterestRate[_user] == 0) {
+            return PRECISION_FACTOR;
+        }
+
+        // s_userInterestRate[_user] is the rate per second.
+        // This product is already scaled appropriately if s_userInterestRate is stored scaled.
+        uint256 fractionalIntrest = s_userInterestRate[_user] * timeElapsed;
+
+        // 3. The growth factor is (1 + fractional_interest_part).
+        // Since '1' is represented as PRECISION_FACTOR, and fractionalInterest is already scaled, we add them.
+        linearInterestFactor = PRECISION_FACTOR + fractionalIntrest;
+        return linearInterestFactor;
     }
 }
