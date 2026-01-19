@@ -113,10 +113,16 @@ contract RebaseToken is ERC20 {
      */
 
     function _mintAccruedInterest(address _user) internal {
-        // TODO: Implement full logic to calculate and mint actual interest tokens.
         // The amount of interest to mint would be:
         // current_dynamic_balance - current_stored_principal_balance
         // Then, _mint(_user, interest_amount_to_mint);
+        // (1) find their current balance of rebase tokens that have been minted to the user -> principle balance
+        uint256 previousPrincipleBalance = super.balanceOf(_user);
+        // (2) calculate their current balance including any interest -> balanceOf
+        uint256 currentBalance = balanceOf(_user);
+        // calculate the number of tokens that need to be minted to the user -> (2) - (1)
+        uint256 balanceIncrease = currentBalance - previousPrincipleBalance;
+        // set the users last updated timestamp
         s_userLastUpdatedTimestamp[_user] = block.timestamp;
     }
 
