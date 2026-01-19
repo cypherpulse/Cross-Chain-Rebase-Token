@@ -62,6 +62,19 @@ contract RebaseToken is ERC20 {
         emit InterestRateSet(_newInterestRate);
     }
 
+    /**
+     * @notice Mints tokens to a user, typically upon deposit.
+     * @dev Also mints accrued interest and locks in the current global rate for the user.
+     * @param _to The address to mint tokens to.
+     * @param _amount The principal amount of tokens to mint.
+     */
+
+    function mint(adress _to, uint256 _amount) external {
+        _mintAccruedIntrest(_to);
+        s_userIntrestRate[_to] = s_intrestRate;
+        _mint(_to, _amount);
+    }
+
     //External Getter Fucntions//
     /**
      * @notice Gets the locked-in interest rate for a specific user.
@@ -71,6 +84,4 @@ contract RebaseToken is ERC20 {
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRate[_user];
     }
-
-    
 }
