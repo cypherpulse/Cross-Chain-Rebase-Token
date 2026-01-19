@@ -62,14 +62,15 @@ contract RebaseToken is ERC20 {
         emit InterestRateSet(_newInterestRate);
     }
 
-
     //External Getter Fucntions//
     /**
- * @notice Gets the locked-in interest rate for a specific user.
- * @param _user The address of the user.
- * @return The user's specific interest rate.
- */
-function getUserInterestRate(address _user) external view returns (uint256) {
-    return s_userInterestRate[_user];
-}
+     * @notice Gets the locked-in interest rate for a specific user.
+     * @param _user The address of the user.
+     * @return The user's specific interest rate.
+     */
+    function getUserInterestRate(address _user) external view returns (uint256) {
+        return s_userInterestRate[_user];
+    }
+
+    
 }
