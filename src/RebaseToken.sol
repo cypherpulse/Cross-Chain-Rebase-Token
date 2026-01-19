@@ -124,6 +124,8 @@ contract RebaseToken is ERC20 {
         uint256 balanceIncrease = currentBalance - previousPrincipleBalance;
         // set the users last updated timestamp
         s_userLastUpdatedTimestamp[_user] = block.timestamp;
+        // Mint the accrued interest tokens to the user
+        _mint(_user, balanceIncrease);
     }
 
     /**
