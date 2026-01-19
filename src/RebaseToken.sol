@@ -86,13 +86,37 @@ contract RebaseToken is ERC20 {
     }
 
     //PUBLIC FUNCTIONS//
+    /**
+     * @notice Returns the current balance of an account, including accrued interest since the last update.
+     * @param _user The address of the account.
+     * @return The total balance including interest.
+     */
+
+    function balanceOf(address _user) public view override returns (uint256) {
+        // Get the user's stored principal balance (tokens actually minted to them).
+        uint256 principalBalance = super.balanceOf(_user);
+
+        //Calculate the growth factor based on accrued interest.
+        uint256 growthFactor = _calculateUserAccumulatedInterestSinceLastUpdate(_user);
+
+        // Apply the growth factor to the principal balance.
+        // Remember PRECISION_FACTOR is used for scaling, so we divide by it here.
+        return principleBalance * growthFactor / PRECISION_FACTOR;
+    }
 
     //INTERNAL FUNCTIONS//
 
     /**
      * @notice Mints accrued interest for a user based on their last update timestamp and locked-in interest rate.
-     * @param _user The address of the user.
-     * * @dev Updates the user's last updated timestamp.
+     * @dev Updates the user's last updated timestamp.
      * @param _user The address of the user.
      */
+
+    function _mintAccruedInterest(address _user) internal {
+        // TODO: Implement full logic to calculate and mint actual interest tokens.
+        // The amount of interest to mint would be:
+        // current_dynamic_balance - current_stored_principal_balance
+        // Then, _mint(_user, interest_amount_to_mint);
+        s_userLastUpdatedTimestamp[_user] = block.timestamp;
+    }
 }
