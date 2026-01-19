@@ -1,66 +1,119 @@
-## Foundry
+# Cross-Chain Rebase Token
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+![Solidity](https://img.shields.io/badge/Solidity-^0.8.24-blue)
+![Foundry](https://img.shields.io/badge/Foundry-^1.0.0-red)
+![OpenZeppelin](https://img.shields.io/badge/OpenZeppelin-^5.0.0-green)
+![Chainlink CCIP](https://img.shields.io/badge/Chainlink%20CCIP-^1.0.0-orange)
 
-Foundry consists of:
+## Description
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This project implements a cross-chain rebase token using Foundry as the development framework. It leverages OpenZeppelin contracts for secure and standardized ERC-20 functionality and Chainlink CCIP (Cross-Chain Interoperability Protocol) for seamless cross-chain transfers and interactions.
 
-## Documentation
+The rebase token automatically adjusts its supply based on predefined mechanisms, enabling dynamic tokenomics across multiple blockchain networks.
 
-https://book.getfoundry.sh/
+For a comprehensive implementation and detailed examples, refer to the [Cyfrin Updraft repository](https://github.com/Cyfrin/foundry-cross-chain-rebase-token-cu).
+
+## Table of Contents
+
+- [Cross-Chain Rebase Token](#cross-chain-rebase-token)
+  - [Description](#description)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Setup](#setup)
+  - [Usage](#usage)
+    - [Build](#build)
+    - [Test](#test)
+    - [Format](#format)
+    - [Gas Snapshots](#gas-snapshots)
+  - [Testing](#testing)
+  - [Deployment](#deployment)
+  - [Contributing](#contributing)
+  - [License](#license)
+
+## Installation
+
+Ensure you have Foundry installed. If not, follow the installation guide at [getfoundry.sh](https://getfoundry.sh/).
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/crossChainRebaseToken.git
+cd crossChainRebaseToken
+```
+
+Install dependencies:
+
+```bash
+forge install
+```
+
+## Setup
+
+1. Configure your environment variables for private keys and RPC URLs.
+2. Update the `foundry.toml` file if needed for custom configurations.
 
 ## Usage
 
 ### Build
 
-```shell
-$ forge build
+Compile the contracts:
+
+```bash
+forge build
 ```
 
 ### Test
 
-```shell
-$ forge test
+Run the test suite:
+
+```bash
+forge test
 ```
 
 ### Format
 
-```shell
-$ forge fmt
+Format the Solidity code:
+
+```bash
+forge fmt
 ```
 
 ### Gas Snapshots
 
-```shell
-$ forge snapshot
+Generate gas usage snapshots:
+
+```bash
+forge snapshot
 ```
 
-### Anvil
+## Testing
 
-```shell
-$ anvil
+Run specific tests or all tests with verbose output:
+
+```bash
+forge test -v
 ```
 
-### Deploy
+## Deployment
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+Deploy the contract using Forge scripts. Example:
+
+```bash
+forge script script/Deploy.s.sol --rpc-url <your_rpc_url> --private-key <your_private_key> --broadcast
 ```
 
-### Cast
+Note: Update the script name and parameters as per your deployment script.
 
-```shell
-$ cast <subcommand>
-```
+## Contributing
 
-### Help
+Contributions are welcome! Please follow the standard Git workflow:
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
