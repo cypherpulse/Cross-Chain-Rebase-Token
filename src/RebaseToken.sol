@@ -134,6 +134,35 @@ contract RebaseToken is ERC20 {
         return principalBalance * growthFactor / PRECISION_FACTOR;
     }
 
+    /**
+     * @notice Transfers tokens from the caller to a recipient.
+     * Accrued interest for both sender and recipient is minted before the transfer.
+     * If the recipient is new, they inherit the sender's interest rate.
+     * @param _recipient The address to transfer tokens to.
+     * @param _amount The amount of tokens to transfer. Can be type(uint256).max to transfer full balance.
+     * @return A boolean indicating whether the operation succeeded.
+     */
+    function transfer(address _recipient, uint256 _amount) public override returns (bool) {
+        // 1. Mint accrued interest for both sender and recipient
+        _mintAccruedInterest(msg.sender);
+        _mintAccruedInterest(_recipient);
+        // 2. Handle request to transfer maximum balance
+        if (_amount == type(uint256).max) {
+            _amount = balanceOf(msg.sender); // Use the interest-inclusive balance
+        }
+        // 3. Set recipient's interest rate if they are new (balance is checked *before* super.transfer)
+        // We use balanceOf here to check the effective balance including any just-minted interest.
+        // If _mintAccruedInterest made their balance non-zero, but they had 0 principle, this still means they are "new" for rate setting.
+        // A more robust check for "newness" for rate setting might be super.balanceOf(_recipient) == 0 before any interest minting for the recipient.
+        // However, the current logic is: if their *effective* balance is 0 before the main transfer part, they get the sender's rate.
+        if (balanceOf(_recipient) == 0 && _amount > 0) {
+            // Ensure _amount > 0 to avoid setting rate on 0-value initial transfer
+            s_userInterestRate[_recipient] = s_userInterestRate[msg.sender];
+        }
+        // 4. Execute the base ERC20 transfer
+        return super.transfer(_recipient, _amount);
+    }
+
     //INTERNAL FUNCTIONS//
 
     /**
