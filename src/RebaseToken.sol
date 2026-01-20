@@ -25,7 +25,8 @@ pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title RebaseToken
@@ -47,7 +48,7 @@ contract RebaseToken is ERC20, Ownable {
     // EVENTS //
     event InterestRateSet(uint256 newInterestRate);
 
-    constructor() ERC20("Rebase Token", "RBT") {}
+    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender) {}
 
     // External Functions //
     /**
@@ -55,7 +56,7 @@ contract RebaseToken is ERC20, Ownable {
      * @param _newInterestRate The new interest rate to set (scaled by PRECISION_FACTOR basis points per second).
      * @dev The interest rate can only decrease. Access control (e.g., onlyOwner) should be added.
      */
-    function setInterestRate(uint256 _newInterestRate) external {
+    function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         // TODO: Add access control
         if (_newInterestRate > s_interestRate) {
             revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
