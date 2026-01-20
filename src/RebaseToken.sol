@@ -74,7 +74,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _amount The principal amount of tokens to mint.
      */
 
-    function mint(address _to, uint256 _amount) external {
+    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE){
         //Todo: Access control to be added
         // Step 1: Mint any existing accrued interest for the us
         _mintAccruedInterest(_to);
@@ -91,7 +91,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _from The user address from which to burn tokens.
      * @param _amount The amount of tokens to burn. Use type(uint256).max to burn all tokens.
      */
-    function burn(address _from, uint256 _amount) external {
+    function burn(address _from, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE){
         // Access control to be added as needed
         uint256 currentTotalBalance = balanceOf(_from); // Calculate this once for efficiency if needed for checks
         if (_amount == type(uint256).max) {
@@ -135,6 +135,10 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      */
     function getInterestRate() external view returns (uint256) {
         return s_interestRate;
+    }
+
+    function grantMintAndBurnRole(address _account) external onlyOwner{
+        _grantRole(MINT_AND_BURN_ROLE, _account);
     }
 
     //PUBLIC FUNCTIONS//
