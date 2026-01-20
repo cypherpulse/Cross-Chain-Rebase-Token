@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.24;
 
-
 import {Test, console} from "forge-std/Test.sol";
 import {RebaseToken} from "../src/RebaseToken.sol";
 import {Vault} from "../src/Vault.sol";
@@ -14,4 +13,11 @@ contract RebaseTokenTest is Test {
 
     address public owner = makeAddr("owner");
     address public user = makeAddr("user");
+
+    function setUp() public {
+        // Impersonate the 'owner' address for deployments and role granting
+        vm.startPrank(owner);
+
+        rebaseToken = new RebaseToken();
+    }
 }
