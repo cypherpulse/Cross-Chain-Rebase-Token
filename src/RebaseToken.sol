@@ -25,8 +25,8 @@ pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title RebaseToken
@@ -50,7 +50,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     // EVENTS //
     event InterestRateSet(uint256 newInterestRate);
 
-    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender){}
+    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender) {}
 
     // External Functions //
     /**
@@ -58,7 +58,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _newInterestRate The new interest rate to set (scaled by PRECISION_FACTOR basis points per second).
      * @dev The interest rate can only decrease. Access control (e.g., onlyOwner) should be added.
      */
-    function setInterestRate(uint256 _newInterestRate) external onlyOwner{
+    function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         // TODO: Add access control
         if (_newInterestRate > s_interestRate) {
             revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
@@ -74,7 +74,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _amount The principal amount of tokens to mint.
      */
 
-    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE){
+    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         //Todo: Access control to be added
         // Step 1: Mint any existing accrued interest for the us
         _mintAccruedInterest(_to);
@@ -91,7 +91,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _from The user address from which to burn tokens.
      * @param _amount The amount of tokens to burn. Use type(uint256).max to burn all tokens.
      */
-    function burn(address _from, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE){
+    function burn(address _from, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         // Access control to be added as needed
         uint256 currentTotalBalance = balanceOf(_from); // Calculate this once for efficiency if needed for checks
         if (_amount == type(uint256).max) {
@@ -137,7 +137,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
         return s_interestRate;
     }
 
-    function grantMintAndBurnRole(address _account) external onlyOwner{
+    function grantMintAndBurnRole(address _account) external onlyOwner {
         _grantRole(MINT_AND_BURN_ROLE, _account);
     }
 
