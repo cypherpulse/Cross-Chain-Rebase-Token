@@ -19,5 +19,18 @@ contract RebaseTokenTest is Test {
         vm.startPrank(owner);
 
         rebaseToken = new RebaseToken();
+
+        // Deploy Vault: requires IRebaseToken.
+        // Direct casting (IRebaseToken(rebaseToken)) is invalid.
+        // Correct way: cast rebaseToken to address, then to IRebaseToken.
+        vault = new Vault(IRebaseToken(address(rebaseToken)));
+
+        // Grant the MINT_AND_BURN_ROLE to the Vault contract.
+        // The grantMintAndBurnRole function expects an address
+
+        rebaseToken.grantMintAndBurnRole(address(vault));
+
+        // Send 1 ETH to the Vault to simulate initial funds.
+        // The target address must be cast to 'payable'.
     }
 }
