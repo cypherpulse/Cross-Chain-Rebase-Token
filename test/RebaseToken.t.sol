@@ -12,5 +12,6 @@ contract RebaseTokenTest is Test {
     RebaseToken private rebaseToken;
     Vault private vault;
 
-    
+    address public owner = makeAddr("owner");
+    address public user = makeAddr("user");
 }
