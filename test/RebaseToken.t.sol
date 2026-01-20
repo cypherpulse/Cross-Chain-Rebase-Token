@@ -32,5 +32,9 @@ contract RebaseTokenTest is Test {
 
         // Send 1 ETH to the Vault to simulate initial funds.
         // The target address must be cast to 'payable'.
+        (bool success,) = payable(address(vault)).call{value: 1 ether}("");
+
+        // Stop impersonating the 'owner'
+        vm.stopPrank();
     }
 }
