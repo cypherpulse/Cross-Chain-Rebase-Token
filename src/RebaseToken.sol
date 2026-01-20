@@ -146,6 +146,7 @@ contract RebaseToken is ERC20 {
         // 1. Mint accrued interest for both sender and recipient
         _mintAccruedInterest(msg.sender);
         _mintAccruedInterest(_recipient);
+
         // 2. Handle request to transfer maximum balance
         if (_amount == type(uint256).max) {
             _amount = balanceOf(msg.sender); // Use the interest-inclusive balance
@@ -159,10 +160,36 @@ contract RebaseToken is ERC20 {
             // Ensure _amount > 0 to avoid setting rate on 0-value initial transfer
             s_userInterestRate[_recipient] = s_userInterestRate[msg.sender];
         }
+
         // 4. Execute the base ERC20 transfer
         return super.transfer(_recipient, _amount);
     }
 
+    /**
+     * @notice Transfers tokens from one address to another, on behalf of the sender,
+     * provided an allowance is in place.
+     * Accrued interest for both sender and recipient is minted before the transfer.
+     * If the recipient is new, they inherit the sender's interest rate.
+     * @param _sender The address to transfer tokens from.
+     * @param _recipient The address to transfer tokens to.
+     * @param _amount The amount of tokens to transfer. Can be type(uint256).max to transfer full balance.
+     * @return A boolean indicating whether the operation succeeded.
+     */
+    function transferFrom(address _sender, address _recipient, uint256 _amount) public override returns (bool) {
+        _mintAccruedInterest(_sender);
+        _mintAccruedInterest(_recipient);
+
+        if (_amount == type(uint256).max) {
+            _amount = balanceOf(_sender); // Use the interest-inclusive balance of the _sender
+        }
+
+        // Set recipient's interest rate if they are new
+        if (balanceOf(_recipient) == 0 && _amount > 0) {
+            s_userInterestRate[_recipient] = s_userInterestRate[_sender];
+        }
+
+        return super.transferFrom(_sender, _recipient, _amount);
+    }
     //INTERNAL FUNCTIONS//
 
     /**
