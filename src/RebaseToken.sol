@@ -105,6 +105,15 @@ contract RebaseToken is ERC20 {
         _burn(_from, _amount);
     }
 
+    /**
+     * @notice Gets the principle balance of a user (tokens actually minted to them), excluding any accrued interest.
+     * @param _user The address of the user.
+     * @return The principle balance of the user.
+     */
+    function principleBalanceOf(address _user) external view returns (uint256) {
+        return super.balanceOf(_user); // Calls ERC20.balanceOf, which returns _balances[_user]
+    }
+
     //External Getter Fucntions//
     /**
      * @notice Gets the locked-in interest rate for a specific user.
@@ -113,6 +122,14 @@ contract RebaseToken is ERC20 {
      */
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRate[_user];
+    }
+
+    /**
+     * @notice Gets the current global interest rate for the token.
+     * @return The current global interest rate.
+     */
+    function getInterestRate() external view returns (uint256) {
+        return s_interestRate;
     }
 
     //PUBLIC FUNCTIONS//
