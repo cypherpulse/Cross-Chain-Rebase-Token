@@ -25,8 +25,8 @@ pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title RebaseToken
@@ -35,7 +35,7 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
  * @notice The interest rate in the smart contract can only decrease.
  * @notice Each user will have their own interest rate that is the global interest rate at the time of deposit.
  */
-contract RebaseToken is ERC20, Ownable {
+contract RebaseToken is ERC20, Ownable, AccessControl {
     //ERRORS//
     error RebaseToken__InterestRateCanOnlyDecrease(uint256 oldInterestRate, uint256 newInterestRate);
 
@@ -45,10 +45,12 @@ contract RebaseToken is ERC20, Ownable {
     mapping(address => uint256) private s_userInterestRate;
     mapping(address => uint256) private s_userLastUpdatedTimestamp;
 
+    bytes32 public constant MINT_AND_BURN_ROLE = keccak256("MINT_AND_BURN_ROLE");
+
     // EVENTS //
     event InterestRateSet(uint256 newInterestRate);
 
-    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender) {}
+    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender){}
 
     // External Functions //
     /**
@@ -56,7 +58,7 @@ contract RebaseToken is ERC20, Ownable {
      * @param _newInterestRate The new interest rate to set (scaled by PRECISION_FACTOR basis points per second).
      * @dev The interest rate can only decrease. Access control (e.g., onlyOwner) should be added.
      */
-    function setInterestRate(uint256 _newInterestRate) external onlyOwner {
+    function setInterestRate(uint256 _newInterestRate) external onlyOwner{
         // TODO: Add access control
         if (_newInterestRate > s_interestRate) {
             revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
