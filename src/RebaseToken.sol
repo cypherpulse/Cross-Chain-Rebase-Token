@@ -113,7 +113,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     /**
      * @notice Gets the principle balance of a user (tokens actually minted to them), excluding any accrued interest.
      * @param _user The address of the user.
-     * @return The principle balance of the user.
+     * return The principle balance of the user.
      */
     function principleBalanceOf(address _user) external view returns (uint256) {
         return super.balanceOf(_user); // Calls ERC20.balanceOf, which returns _balances[_user]
@@ -123,7 +123,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     /**
      * @notice Gets the locked-in interest rate for a specific user.
      * @param _user The address of the user.
-     * @return The user's specific interest rate.
+     * return The user's specific interest rate.
      */
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRate[_user];
@@ -131,7 +131,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
 
     /**
      * @notice Gets the current global interest rate for the token.
-     * @return The current global interest rate.
+     * return The current global interest rate.
      */
     function getInterestRate() external view returns (uint256) {
         return s_interestRate;
@@ -145,7 +145,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     /**
      * @notice Returns the current balance of an account, including accrued interest since the last update.
      * @param _user The address of the account.
-     * @return The total balance including interest.
+     * return The total balance including interest.
      */
 
     function balanceOf(address _user) public view override returns (uint256) {
@@ -166,7 +166,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * If the recipient is new, they inherit the sender's interest rate.
      * @param _recipient The address to transfer tokens to.
      * @param _amount The amount of tokens to transfer. Can be type(uint256).max to transfer full balance.
-     * @return A boolean indicating whether the operation succeeded.
+     * return A boolean indicating whether the operation succeeded.
      */
     function transfer(address _recipient, uint256 _amount) public override returns (bool) {
         // 1. Mint accrued interest for both sender and recipient
@@ -199,7 +199,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _sender The address to transfer tokens from.
      * @param _recipient The address to transfer tokens to.
      * @param _amount The amount of tokens to transfer. Can be type(uint256).max to transfer full balance.
-     * @return A boolean indicating whether the operation succeeded.
+     * return A boolean indicating whether the operation succeeded.
      */
     function transferFrom(address _sender, address _recipient, uint256 _amount) public override returns (bool) {
         _mintAccruedInterest(_sender);
@@ -247,7 +247,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     /**
      * @dev Calculates the growth factor due to accumulated interest since the user's last update.
      * @param _user The address of the user.
-     * @return The growth factor, scaled by PRECISION_FACTOR. (e.g., 1.05x growth is 1.05 * 1e18).
+     * return The growth factor, scaled by PRECISION_FACTOR. (e.g., 1.05x growth is 1.05 * 1e18).
      */
 
     function _calculateUserAccumulatedInterestSinceLastUpdate(address _user)
